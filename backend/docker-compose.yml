@@ -1,0 +1,28 @@
+version: '3.8'
+
+services:
+  backend:
+    build: .
+    image: backend:latest
+    environment:
+      DB_NAME: ${DB_NAME}
+      DB_HOST: ${DB_HOST}
+      DB_PORT: ${DB_PORT}
+      DB_PWD: ${DB_PWD}
+      DB_USER: ${DB_USER}
+      NODE_ENV: development
+    depends_on:
+      - db
+    ports:
+      - 3000:3000
+  db:
+    image: postgres:11
+    restart: always
+    volumes:
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+    environment:
+      POSTGRES_DB: ${DB_NAME}
+      POSTGRES_PASSWORD: ${DB_PWD}
+      POSTGRES_USER: ${DB_USER}
+    ports:
+      - ${DB_PORT}:5432
