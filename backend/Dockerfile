@@ -1,18 +1,26 @@
-FROM node:alpine
+FROM node:alpine AS builder
 
-# Create app directory
-WORKDIR /volteras/backend
+WORKDIR /src
 
-# Install app dependencies
-COPY package.json ./
-COPY package-lock.json ./
-COPY . .
+COPY package.json /src/
+COPY package-lock.json /src/
 
 RUN npm install
+# copy rest of files to the workdir
+ADD . /src
+
+# build the project
 RUN npm run build
+#
+## start final image
+FROM node:alpine
 
-# Bundle app source
-COPY . .
+WORKDIR /src
 
+## copy over build files from builder step
+COPY --from=builder /src/.output  src/.output
+
+ENV HOST 0.0.0.0
 EXPOSE 3000
-CMD ["npm", "start"]
+## run the build project with node
+ENTRYPOINT ["node", "src/.output/server/index.mjs"]
