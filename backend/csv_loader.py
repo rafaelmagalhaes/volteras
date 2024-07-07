@@ -12,13 +12,14 @@ db_name = os.getenv("DB_NAME")
 db_port = os.getenv("DB_PORT")
 db_pwd = os.getenv("DB_PWD")
 db_user = os.getenv("DB_USER")
+db_host = os.getenv("DB_HOST")
 
 def load_csv_to_db(csv_file, table_name):
     conn = psycopg2.connect(
         dbname=db_name,
         user=db_user,
         password=db_pwd,
-        host='host.docker.internal',
+        host=db_host,
         port=db_port
     )
     cursor = conn.cursor()
