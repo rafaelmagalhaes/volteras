@@ -1,8 +1,6 @@
-import viteLogo from '../../public/vite.svg';
-import reactLogo from '../assets/react.svg';
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { fetchVehiclesList } from '@/api/vehicles.ts';
-import { DataGrid, GridColDef, GridPaginationModel } from '@mui/x-data-grid';
+import DataTable from 'react-data-table-component';
 
 function Home() {
   const [vehicles, setVehicles] = useState([]);
@@ -10,71 +8,139 @@ function Home() {
   const [offset, setOffset] = useState(0);
   const [limit, setLimit] = useState(10);
   const [pageNumber, setPageNumber] = useState(0);
+  const [loading, setLoading] = useState(false);
+
   const getVehicles = async () => {
+    setLoading(true);
     await fetchVehiclesList({ offset, limit }).then((res) => {
       setTotalItems(res.totalCount);
       setVehicles(res.data);
+      setLoading(false);
     });
   };
 
   useEffect(() => {
     getVehicles();
-  }, [offset]);
+  }, [offset, limit]);
 
-  const nextPage = (paginationModel: GridPaginationModel) => {
-    console.log('=>(Home.tsx:26) paginationModel', paginationModel);
-    setPageNumber(paginationModel.page);
-    const newOffset = (paginationModel.page + 1) * limit - limit;
-    console.log('=>(Home.tsx:29) newOffset', newOffset);
+  const handlePageChange = (page) => {
+    setPageNumber(page);
+    const newOffset = page * limit - limit;
     setOffset(newOffset);
   };
-  const columns: GridColDef[] = [
-    { field: 'id', headerName: 'ID' },
-    { field: 'vehicle_id', headerName: 'Vehicle Id' },
-    { field: 'timestamp', headerName: 'Timestamp' },
+  const handleRowChange = (newPerPage, page) => {
+    console.log('=>(Home.tsx:33) newPerPage,page', newPerPage, page);
+    setPageNumber(page);
+    const newOffset = page * limit - limit;
+    setLimit(newPerPage);
+    setOffset(newOffset);
+  };
+  const columns = [
+    { id: 'id', name: 'ID', selector: (row) => row.id },
+    { id: 'vehicle_id', name: 'Vehicle Id', selector: (row) => row.vehicle_id },
+    { id: 'timestamp', name: 'Timestamp', selector: (row) => row.timestamp, sortable: true },
     {
-      field: 'speed',
-      headerName: 'Speed km/h',
-      type: 'number'
+      id: 'speed',
+      name: 'Speed km/h',
+      selector: (row) => row.speed,
+      sortable: true
     },
     {
-      field: 'odometer',
-      headerName: 'Odometer Km',
-      type: 'number'
+      id: 'odometer',
+      name: 'Odometer Km',
+      selector: (row) => row.odometer,
+      sortable: true
     },
     {
-      field: 'soc',
-      headerName: 'State of charge',
-      type: 'number'
+      id: 'soc',
+      name: 'State of charge',
+      selector: (row) => row.soc,
+      sortable: true
     },
     {
-      field: 'elevation',
-      headerName: ' Elevation of the vehicle',
-      description: ' Elevation of the vehicle represented in metres',
-      type: 'number'
+      id: 'elevation',
+      name: ' Elevation of the vehicle',
+      selector: (row) => row.elevation,
+      sortable: true
     },
     {
-      field: 'shift_state',
-      headerName: 'Current gear',
-      type: 'number'
+      id: 'shift_state',
+      name: 'Current gear',
+      selector: (row) => row.shift_state,
+      sortable: true
     }
   ];
+  const paginationComponentOptions = {
+    rowsPerPageText: 'Rows per page',
+    rangeSeparatorText: 'of',
+    selectAllRowsItem: true
+  };
+  // Blatant "inspiration" from https://codepen.io/Jacqueline34/pen/pyVoWr
+  function convertArrayOfObjectsToCSV(array) {
+    let result;
+
+    const columnDelimiter = ',';
+    const lineDelimiter = '\n';
+    const keys = Object.keys(vehicles[0]);
+
+    result = '';
+    result += keys.join(columnDelimiter);
+    result += lineDelimiter;
+
+    array.forEach((item) => {
+      let ctr = 0;
+      keys.forEach((key) => {
+        if (ctr > 0) result += columnDelimiter;
+
+        result += item[key];
+
+        ctr++;
+      });
+      result += lineDelimiter;
+    });
+
+    return result;
+  }
+
+  // Blatant "inspiration" from https://codepen.io/Jacqueline34/pen/pyVoWr
+  function downloadCSV(array) {
+    const link = document.createElement('a');
+    let csv = convertArrayOfObjectsToCSV(array);
+    if (csv == null) return;
+
+    const filename = 'export.csv';
+
+    if (!csv.match(/^data:text\/csv/i)) {
+      csv = `data:text/csv;charset=utf-8,${csv}`;
+    }
+
+    link.setAttribute('href', encodeURI(csv));
+    link.setAttribute('download', filename);
+    link.click();
+  }
+
+  const Export = ({ onExport }) => (
+    <button onClick={(e) => onExport(e.target.value)}>Export</button>
+  );
+  const actionsMemo = useMemo(() => <Export onExport={() => downloadCSV(vehicles)} />, [vehicles]);
 
   return (
     <>
       <div style={{ width: '100%' }}>
         {vehicles.length > 0 && (
-          <DataGrid
-            rows={vehicles}
+          <DataTable
+            title="Vehicles"
+            progressPending={loading}
+            data={vehicles}
             columns={columns}
-            rowCount={totalItems}
-            paginationMode="server"
-            initialState={{
-              pagination: {
-                paginationModel: { page: 0, pageSize: limit }
-              }
-            }}
-            onPaginationModelChange={nextPage}
+            fixedHeader={true}
+            pagination
+            paginationServer
+            paginationTotalRows={totalItems}
+            onChangePage={handlePageChange}
+            onChangeRowsPerPage={handleRowChange}
+            paginationComponentOptions={paginationComponentOptions}
+            actions={actionsMemo}
           />
         )}
       </div>
