@@ -15,7 +15,9 @@ export const VehicleColumns = [
     name: 'Speed km/h',
     selector: (row: VehiclesTypes) => row.speed,
     cell: (row: VehiclesTypes) => (
-      <div>{row.speed === 'NULL' ? <span>0</span> : <span>{row.speed}</span>}</div>
+      <div>
+        {row.speed === 'NULL' || row.speed === null ? <span>0</span> : <span>{row.speed}</span>}
+      </div>
     ),
     sortable: true
   },
@@ -65,7 +67,13 @@ export const VehicleColumns = [
     name: 'Current gear',
     selector: (row: VehiclesTypes) => row.shift_state,
     cell: (row: VehiclesTypes) => (
-      <div>{row.shift_state === 'NULL' ? <span>N</span> : <span>{row.shift_state}</span>}</div>
+      <div>
+        {row.shift_state === 'NULL' || row.speed === null ? (
+          <span>N</span>
+        ) : (
+          <span>{row.shift_state}</span>
+        )}
+      </div>
     ),
 
     sortable: true
