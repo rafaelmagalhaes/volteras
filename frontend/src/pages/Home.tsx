@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { fetchVehiclesList } from '@/api/vehicles.ts';
-
 import { VehicleTable } from '@/components/Vehicles/Table.tsx';
+import { TimeStampType, VehicleFilters } from '@/types/vehicles.types.ts';
 
 function Home() {
   const [vehicles, setVehicles] = useState([]);
@@ -10,9 +10,13 @@ function Home() {
   const [limit, setLimit] = useState(10);
   const [loading, setLoading] = useState(false);
   const [vehicleId, setVehicleId] = useState('');
+  const [timestamp, setTimestamp] = useState<TimeStampType | undefined>({
+    from: undefined,
+    to: undefined
+  });
   const getVehicles = async () => {
     setLoading(true);
-    await fetchVehiclesList({ offset, limit, vehicle_id: vehicleId }).then((res) => {
+    await fetchVehiclesList({ offset, limit, vehicle_id: vehicleId, timestamp }).then((res) => {
       setTotalItems(res.totalCount);
       setVehicles(res.data);
       setLoading(false);
@@ -21,7 +25,7 @@ function Home() {
 
   useEffect(() => {
     getVehicles();
-  }, [offset, limit, vehicleId]);
+  }, [offset, limit, vehicleId, timestamp]);
 
   const handlePageChange = (page: number) => {
     const newOffset = page * limit - limit;
@@ -32,8 +36,20 @@ function Home() {
     setLimit(newPerPage);
     setOffset(newOffset);
   };
-  const handleVehicleIdChange = (vehicleId: string) => {
-    setVehicleId(vehicleId);
+  const handleFilterChanges = ({ vehicleId, reset, timestamp: date }: VehicleFilters) => {
+    if (reset) {
+      setVehicleId('');
+      setTimestamp({
+        to: undefined,
+        from: undefined
+      });
+    }
+    if (date?.from && date?.to) {
+      setTimestamp(date);
+    }
+    if (vehicleId !== '') {
+      setVehicleId(vehicleId as string);
+    }
     setOffset(0);
     setLimit(10);
   };
@@ -46,7 +62,7 @@ function Home() {
         totalItems={totalItems}
         handlePageChange={handlePageChange}
         handleRowChange={handleRowChange}
-        handleVehicleIdChange={handleVehicleIdChange}
+        handleFilterChanges={handleFilterChanges}
       />
     </>
   );

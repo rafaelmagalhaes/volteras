@@ -4,17 +4,18 @@ import { VehicleColumns } from '@/components/Vehicles/TableColumns.tsx';
 import React, { useMemo, useState } from 'react';
 import { Export } from '@/components/Export.tsx';
 import { downloadCSV } from '@/helpers/csvConverter.ts';
-import { VehiclesTypes } from '@/types/vehicles.types.ts';
+import { TimeStampType, VehicleFilters, VehiclesTypes } from '@/types/vehicles.types.ts';
 import { Input } from '@/components/Input.tsx';
 import { Button } from '@/components/Button.tsx';
 import { z, ZodIssue } from 'zod';
+import { DatePickerWithRange } from '@/components/DatePickerRange.tsx';
 interface VehicleTableProps {
   loading: boolean;
   vehicles: VehiclesTypes[];
   totalItems: number | undefined;
   handlePageChange: (page: number) => void;
   handleRowChange: (newPerPage: number, page: number) => void;
-  handleVehicleIdChange: (id: string) => void;
+  handleFilterChanges: (filter: VehicleFilters) => void;
 }
 
 export const VehicleTable = ({
@@ -23,10 +24,14 @@ export const VehicleTable = ({
   totalItems,
   handlePageChange,
   handleRowChange,
-  handleVehicleIdChange
+  handleFilterChanges
 }: VehicleTableProps) => {
   const [validationError, setValidationError] = useState<ZodIssue | null>(null);
   const [vehicleId, setVehicleId] = useState('');
+  const [timestamp, setTimestamp] = useState<TimeStampType | undefined>({
+    from: undefined,
+    to: undefined
+  });
   const columns = useMemo(() => VehicleColumns, []);
   const paginationComponentOptions = {
     rowsPerPageText: 'Rows per page',
@@ -41,8 +46,6 @@ export const VehicleTable = ({
   });
 
   const actionsMemo = useMemo(() => <Export onExport={() => downloadCSV(vehicles)} />, [vehicles]);
-  // todo display message when data is empty
-  // todo when there's an error
 
   const handleInputChanges = (event: React.ChangeEvent<HTMLInputElement>) => {
     const vehicle_id = event.target.value;
@@ -60,10 +63,20 @@ export const VehicleTable = ({
     }
   };
 
+  const updateFilter = () => {
+    handleFilterChanges({ vehicleId, timestamp });
+  };
   const clearFilter = () => {
     setVehicleId('');
     setValidationError(null);
-    handleVehicleIdChange('');
+    setTimestamp({
+      from: undefined,
+      to: undefined
+    });
+    handleFilterChanges({ reset: true });
+  };
+  const handleTimestampChange = (date: TimeStampType | undefined) => {
+    setTimestamp(date);
   };
   return (
     <>
@@ -72,25 +85,27 @@ export const VehicleTable = ({
           <CardTitle>Vehicles</CardTitle>
         </CardHeader>
         <CardContent>
-          <div className="flex w-full max-w-sm items-center space-x-2 mb-4">
+          <div className="flex w-full max-w-screen-lg items-center space-x-2 mb-4">
             <Input
               id="vehicle_id"
               placeholder="Search by vehicle id"
               onChange={handleInputChanges}
               value={vehicleId}
-              className={validationError ? 'border-rose-500' : ''}
+              className={validationError ? 'border-rose-500 w-50 mr-2mr-2' : 'w-50 mr-2'}
             />
-            <Button
-              variant="outline"
-              disabled={!!validationError?.message || !vehicleId}
-              onClick={() => handleVehicleIdChange(vehicleId)}>
+            <DatePickerWithRange
+              className="w-50"
+              label="Filter by timeStamp"
+              handleTimestampChange={handleTimestampChange}
+            />
+            <Button variant="outline" disabled={!!validationError?.message} onClick={updateFilter}>
               Filter
             </Button>
-            <Button variant="outline" disabled={!vehicleId} onClick={clearFilter}>
+            <Button variant="outline" onClick={clearFilter}>
               Clear Filter
             </Button>
           </div>
-          <small className=" text-left block text-xs text-rose-500">
+          <small className="text-left block text-xs text-rose-500">
             {validationError && validationError.message}
           </small>
 
