@@ -1,20 +1,20 @@
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/Card.tsx';
 import DataTable from 'react-data-table-component';
 import { VehicleColumns } from '@/components/Vehicles/TableColumns.tsx';
-import { useMemo, useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import { Export } from '@/components/Export.tsx';
 import { downloadCSV } from '@/helpers/csvConverter.ts';
 import { VehiclesTypes } from '@/types/vehicles.types.ts';
 import { Input } from '@/components/Input.tsx';
 import { Button } from '@/components/Button.tsx';
-import { z } from 'zod';
+import { z, ZodIssue } from 'zod';
 interface VehicleTableProps {
   loading: boolean;
   vehicles: VehiclesTypes[];
-  totalItems: number;
-  handlePageChange: () => void;
-  handleRowChange: () => void;
-  handleVehicleIdChange: () => void;
+  totalItems: number | undefined;
+  handlePageChange: (page: number) => void;
+  handleRowChange: (newPerPage: number, page: number) => void;
+  handleVehicleIdChange: (id: string) => void;
 }
 
 export const VehicleTable = ({
@@ -25,7 +25,7 @@ export const VehicleTable = ({
   handleRowChange,
   handleVehicleIdChange
 }: VehicleTableProps) => {
-  const [validationError, setValidationError] = useState(null);
+  const [validationError, setValidationError] = useState<ZodIssue | null>(null);
   const [vehicleId, setVehicleId] = useState('');
   const columns = useMemo(() => VehicleColumns, []);
   const paginationComponentOptions = {
@@ -44,7 +44,7 @@ export const VehicleTable = ({
   // todo display message when data is empty
   // todo when there's an error
 
-  const handleInputChanges = (event) => {
+  const handleInputChanges = (event: React.ChangeEvent<HTMLInputElement>) => {
     const vehicle_id = event.target.value;
     if (vehicle_id === '') {
       setValidationError(null);
@@ -82,7 +82,7 @@ export const VehicleTable = ({
             />
             <Button
               variant="outline"
-              disabled={validationError || !vehicleId}
+              disabled={!!validationError?.message || !vehicleId}
               onClick={() => handleVehicleIdChange(vehicleId)}>
               Filter
             </Button>

@@ -2,7 +2,6 @@ import { useEffect, useState } from 'react';
 import { fetchVehiclesList } from '@/api/vehicles.ts';
 
 import { VehicleTable } from '@/components/Vehicles/Table.tsx';
-import { Card, CardContent } from '@/components/Card.tsx';
 
 function Home() {
   const [vehicles, setVehicles] = useState([]);
