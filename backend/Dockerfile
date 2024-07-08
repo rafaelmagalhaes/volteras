@@ -23,4 +23,4 @@ COPY --from=builder /src/.output  src/.output
 ENV HOST 0.0.0.0
 EXPOSE 3000
 ## run the build project with node
-ENTRYPOINT ["node", "src/.output/server/index.mjs"]
+ENTRYPOINT ["node", "src/.output/server/index.mjs", "--", "--host","0.0.0.0"]

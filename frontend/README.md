@@ -1,30 +1,49 @@
 # React + TypeScript + Vite
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Project built using vite cli to generate react project
 
-Currently, two official plugins are available:
+Tech Stack:
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+1. react
+2. typescript
+3. react-data-table library
+4. shadcn to create following components
+   1. Card
+   2. Input
+   3. Button
+5. tailwind css
+6. vite
 
-## Expanding the ESLint configuration
+## Setup project
 
-If you are developing a production application, we recommend updating the configuration to enable type aware lint rules:
 
-- Configure the top-level `parserOptions` property like this:
 
-```js
-export default {
-  // other rules...
-  parserOptions: {
-    ecmaVersion: 'latest',
-    sourceType: 'module',
-    project: ['./tsconfig.json', './tsconfig.node.json'],
-    tsconfigRootDir: __dirname,
-  },
-}
+create `.env` file and add
+```bash
+VITE_API_URL=http://localhost:3000/api
+```
+this should be the url where the backend is running on
+
+## Docker
+
+once you created `.env` file you can run
+
+```bash
+docker compose up --build -d
+```
+the `-d` will make sure it runs in the background, now you just need to run the same command in backend folder to start the backend services
+
+
+### Local development
+
+Install packages
+
+```bash
+npm install
 ```
 
-- Replace `plugin:@typescript-eslint/recommended` to `plugin:@typescript-eslint/recommended-type-checked` or `plugin:@typescript-eslint/strict-type-checked`
-- Optionally add `plugin:@typescript-eslint/stylistic-type-checked`
-- Install [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react) and add `plugin:react/recommended` & `plugin:react/jsx-runtime` to the `extends` list
+Run dev server
+
+```bash
+npm run dev
+```

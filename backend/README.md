@@ -47,7 +47,31 @@
 ##### Example cURL
 
 > ```javascript
->  curl -X GET -H "Content-Type: application/json" http://localhost:3000/1
+>  curl -X GET -H "Content-Type: application/json" http://localhost:3000/api/vehicles/1
+> ```
+
+</details>
+<details>
+ <summary><code>POST</code> <code><b>/api/vehicles/</b></code> <code>(add new vehicle)</code></summary>
+
+##### Headers
+
+> | name    | type   | data type | description              |
+> |---------|--------|-----------|--------------------------|
+> | `token` | Header |   N/A     | needs to mach value 123  |
+
+##### Responses
+
+> | http code | content-type               | response                                    |
+> |-----------|----------------------------|---------------------------------------------|
+> | `201`     | `application/json`         | Created data                                |
+> | `401`     | `application/json`         | Unauthorised if token is incorrect          |
+> | `400`     | `application/json`         | bad request if body doesnt match the schema |
+
+##### Example cURL
+
+> ```javascript
+>  curl -X GET -H "Content-Type: application/json" http://localhost:3000/api/vehicles
 > ```
 
 </details>

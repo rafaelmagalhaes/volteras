@@ -1,3 +1,7 @@
 # How to set up the backend
 
 [Setup guide](backend/README.md/)
+
+# Setup frontend
+
+[Setup guide](frontend/README.md/)
