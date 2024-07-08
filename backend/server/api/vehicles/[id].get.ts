@@ -10,7 +10,10 @@ export default defineEventHandler(async (event) => {
       .from(vehicleDataTable)
       .where(eq(vehicleDataTable.id, parseInt(id)));
     if (!data.length) {
-      return { status: 200, message: 'No vehicle found' };
+      return createError({
+        status: 404,
+        statusMessage: 'vehicle not found'
+      });
     }
     return data[0];
   } catch (e) {

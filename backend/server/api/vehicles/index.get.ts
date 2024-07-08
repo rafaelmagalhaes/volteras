@@ -6,7 +6,7 @@ export default defineEventHandler(async (event) => {
   const { limit, offset, vehicle_id } = getQuery(event);
 
   const currentLimit = limit ?? 10; // default to 10 if undefined
-  const currentOffset = offset ?? 10; // default to 10 if undefined
+  const currentOffset = offset ?? 0; // default to 0 if undefined
 
   try {
     let totalItems;
@@ -22,6 +22,12 @@ export default defineEventHandler(async (event) => {
         .limit(currentLimit)
         .offset(currentOffset)
         .where(eq(vehicleDataTable.vehicle_id, vehicle_id as string));
+      if (!data.length) {
+        return createError({
+          status: 404,
+          statusMessage: 'vehicle not found'
+        });
+      }
     } else {
       totalItems = await db?.select({ value: count() }).from(vehicleDataTable);
       data = await db.select().from(vehicleDataTable).limit(currentLimit).offset(currentOffset);

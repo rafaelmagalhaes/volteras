@@ -12,7 +12,7 @@
 > |--------------|-------------------------------|-----------|-------------------------------------------|
 > | `vehicle_id` | optional                      | uuid      | return all data belongs to vehicle_id     |
 > | `limit`      | optional - default value = 10 | number    | how many records to fetch per page        |
-> | `offset`     | optional - default value = 10 | number    | how many rows to skip when returning data |
+> | `offset`     | optional - default value = 0  | number    | how many rows to skip when returning data |
 
 ##### Responses
 
