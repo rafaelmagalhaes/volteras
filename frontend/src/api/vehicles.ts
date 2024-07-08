@@ -5,7 +5,8 @@ export const fetchVehiclesList = async (payload: VehicleListPayload) => {
   // Append parameters if they exist
   if (payload?.limit) queryParams.append('limit', payload?.limit.toString());
   if (payload?.vehicle_id) queryParams.append('vehicle_id', payload?.vehicle_id);
-  if (payload?.offset >= 0) queryParams.append('offset', payload?.offset.toString());
+  if (payload.offset && payload.offset >= 0)
+    queryParams.append('offset', payload?.offset.toString());
 
   try {
     const response = await fetch(`${import.meta.env.VITE_API_URL}/vehicles/?${queryParams}`);
@@ -14,7 +15,7 @@ export const fetchVehiclesList = async (payload: VehicleListPayload) => {
     }
     return await response.json();
   } catch (error) {
-    console.warn('An error occured while trying to fetch vehicles:', error?.message);
+    console.warn('An error occured while trying to fetch vehicles:', error);
     return false;
   }
 };
@@ -27,7 +28,7 @@ export const fetchSingleVehicle = async (id: string) => {
     }
     return true;
   } catch (error) {
-    console.warn('An error occured while trying to fetch vehicles:', error?.message);
+    console.warn('An error occured while trying to fetch vehicles:', error);
     return false;
   }
 };
