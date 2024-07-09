@@ -91,10 +91,10 @@ export const VehicleTable = ({
               placeholder="Search by vehicle id"
               onChange={handleInputChanges}
               value={vehicleId}
-              className={validationError ? 'border-rose-500 w-50 sm:mr-2' : 'w-50 sm:mr-2'}
+              className={validationError ? 'border-rose-500 sm:w-50 sm:mr-2' : 'sm:w-50 sm:mr-2'}
             />
             <DatePickerWithRange
-              className="w-50"
+              className="w-[100%] sm:w-[300px]"
               label="Filter by timeStamp"
               handleTimestampChange={handleTimestampChange}
             />
