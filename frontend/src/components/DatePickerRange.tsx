@@ -17,7 +17,6 @@ export function DatePickerWithRange({ className, handleTimestampChange, label })
   useEffect(() => {
     if (date?.from && date?.to) {
       handleTimestampChange(date);
-      console.log('=>(DatePickerRange.tsx:20) date', date);
     }
   }, [date]);
   return (

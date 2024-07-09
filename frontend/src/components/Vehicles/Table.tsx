@@ -85,23 +85,30 @@ export const VehicleTable = ({
           <CardTitle>Vehicles</CardTitle>
         </CardHeader>
         <CardContent>
-          <div className="flex w-full max-w-screen-lg items-center space-x-2 mb-4">
+          <div className="sm:flex w-full max-w-screen-lg items-center sm:space-x-2 sm:space-y-0 space-y-2 mb-4">
             <Input
               id="vehicle_id"
               placeholder="Search by vehicle id"
               onChange={handleInputChanges}
               value={vehicleId}
-              className={validationError ? 'border-rose-500 w-50 mr-2mr-2' : 'w-50 mr-2'}
+              className={validationError ? 'border-rose-500 w-50 sm:mr-2' : 'w-50 sm:mr-2'}
             />
             <DatePickerWithRange
               className="w-50"
               label="Filter by timeStamp"
               handleTimestampChange={handleTimestampChange}
             />
-            <Button variant="outline" disabled={!!validationError?.message} onClick={updateFilter}>
+            <Button
+              className="float-left sm:float-none"
+              variant="outline"
+              disabled={!!validationError?.message}
+              onClick={updateFilter}>
               Filter
             </Button>
-            <Button variant="outline" onClick={clearFilter}>
+            <Button
+              className="float-left sm:float-none ml-2"
+              variant="outline"
+              onClick={clearFilter}>
               Clear Filter
             </Button>
           </div>
