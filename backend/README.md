@@ -10,11 +10,13 @@
 
 ##### Parameters
 
-> | name         | type                          | data type | description                               |
-> |--------------|-------------------------------|-----------|-------------------------------------------|
-> | `vehicle_id` | optional                      | uuid      | return all data belongs to vehicle_id     |
-> | `limit`      | optional - default value = 10 | number    | how many records to fetch per page        |
-> | `offset`     | optional - default value = 0  | number    | how many rows to skip when returning data |
+> | name               | type                          | data type        | description                                   |
+> |--------------------|-------------------------------|------------------|-----------------------------------------------|
+> | `vehicle_id`       | optional                      | uuid             | return all data belongs to vehicle_id         |
+> | `limit`            | optional - default value = 10 | number           | how many records to fetch per page            |
+> | `offset`           | optional - default value = 0  | number           | how many rows to skip when returning data     |
+> | `initialTimestamp` | optional                      | date iso string  | filter by timestamp finalTimestamp required   |
+> | `finalTimestamp`   | optional                      | date iso string  | filter by timestamp initialTimestamp required |
 
 ##### Responses
 
