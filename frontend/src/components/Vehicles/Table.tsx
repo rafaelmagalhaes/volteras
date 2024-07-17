@@ -78,6 +78,19 @@ export const VehicleTable = ({
   const handleTimestampChange = (date: TimeStampType | undefined) => {
     setTimestamp(date);
   };
+  const customSort = (rows: VehiclesTypes[], selector: any, direction: string) => {
+    return rows.sort((rowA, rowB): any => {
+      const aField = selector(rowA);
+      const bField = selector(rowB);
+      if (direction === 'asc') {
+        return aField - bField;
+      }
+      if (direction === 'desc') {
+        return bField - aField;
+      }
+    });
+  };
+
   return (
     <>
       <Card>
@@ -117,6 +130,7 @@ export const VehicleTable = ({
           </small>
 
           <DataTable
+            sortFunction={customSort}
             progressPending={loading}
             data={vehicles}
             columns={columns}

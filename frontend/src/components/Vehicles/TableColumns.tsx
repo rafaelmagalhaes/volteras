@@ -2,13 +2,19 @@ import { VehiclesTypes } from '@/types/vehicles.types.ts';
 import { formatDate } from '@/helpers/dateFormater.ts';
 
 export const VehicleColumns = [
-  { id: 'vehicle_id', name: 'Vehicle Id', selector: (row: VehiclesTypes) => row.vehicle_id },
+  {
+    id: 'vehicle_id',
+    name: 'Vehicle Id',
+    selector: (row: VehiclesTypes) => row.vehicle_id,
+    grow: 3
+  },
   {
     id: 'timestamp',
     name: 'Timestamp',
     selector: (row: VehiclesTypes) => row.timestamp,
     cell: (row: VehiclesTypes) => <div>{formatDate(row.timestamp)}</div>,
-    sortable: true
+    sortable: true,
+    grow: 2
   },
   {
     id: 'speed',
